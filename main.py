@@ -1,5 +1,6 @@
 import random
 
+#Global variables
 MAX_LINES = 3
 MAX_BET = 100
 MIN_BET = 1
@@ -21,6 +22,7 @@ symbol_value = {
     "D": 2,
 }
 
+#Checks the spin for matching letters in each row
 def check_winnings(columns, lines, bet, values):
     winnings = 0
     winning_lines = []
@@ -32,10 +34,11 @@ def check_winnings(columns, lines, bet, values):
                 break
         else:
             winnings += values[symbol] * bet
-            winning_lines.append(line +1)
+            winning_lines.append(line +1)#adds which lines the player won on
     
     return winnings, winning_lines
 
+#Gets a new slot spin and saves it in a nested list
 def get_slot_machine_spin(rows, cols, symbols):
     all_symbols = []
     for symbol, symbol_count in symbols.items():
@@ -55,6 +58,7 @@ def get_slot_machine_spin(rows, cols, symbols):
     
     return columns
 
+#prints the slot spin and transposes the nested list/matix
 def print_slot_machine(columns):
     for row in range(len(columns[0])):
         for i, column in enumerate(columns):
@@ -63,12 +67,13 @@ def print_slot_machine(columns):
             else:
                 print(column[row], end="\n")
 
+#requests a money deposit from the player
 def deposit():
     while True:
         amount = input("What would you like to deposit? $")
-        if amount.isdigit():
-            amount = int(amount)
-            if amount > 0:
+        if amount.isdigit():#checks if the value given is a digit
+            amount = int(amount)#changes the string to an integer
+            if amount > 0:#checks if the given value is greater than 0
                 break
             else:
                 print("Amount must be greater than 0.")
@@ -77,12 +82,13 @@ def deposit():
     
     return amount
 
+#Requests the number of lines to bet on with similar checks to deposit()
 def get_number_of_lines():
     while True:
         lines = input("What number of lines would you like to bet on? (1-" + str(MAX_LINES) + ") ")
         if lines.isdigit():
             lines = int(lines)
-            if 1 <= lines <= MAX_LINES:
+            if 1 <= lines <= MAX_LINES:#has to be less than the global variable
                 break
             else:
                 print("Enter a valid number of lines.")
@@ -91,12 +97,13 @@ def get_number_of_lines():
     
     return lines
 
+#Requests the amount to bet per line
 def get_bet():
     while True:
         amount = input("How much would you like to bet per line? $")
         if amount.isdigit():
             amount = int(amount)
-            if MIN_BET <= amount <= MAX_BET:
+            if MIN_BET <= amount <= MAX_BET:#has to be between the global variables
                 break
             else:
                 print(f"The bet must be between ${MIN_BET} - ${MAX_BET}.")
@@ -105,12 +112,13 @@ def get_bet():
     
     return amount
 
+#completes a spin and returns winnings/losses
 def spin(balance):
     lines = get_number_of_lines()
     while True:
         bet = get_bet()
         total_bet = bet * lines
-        if total_bet > balance:
+        if total_bet > balance:#checks against current ballance
             print(f"You do not have enough balance to make that bet. Your current balance is ${balance}.")
         else:
             break
@@ -122,7 +130,7 @@ def spin(balance):
     winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
     print(f"You won ${winnings}.")
     if winnings > 0:
-        print("You won on line(s):", *winning_lines)#prints a list separated by spaces
+        print("You won on line(s):", *winning_lines)#prints a list separated by spaces (* = splat)
         
     return winnings - total_bet
 
@@ -135,7 +143,7 @@ def main():
         if play.lower() == "q":
             break
         balance += spin(balance)
-        if balance == 0:
+        if balance == 0:#exits automatically if the player ran out of money
             break
         
     if balance == 0:
@@ -146,11 +154,11 @@ def main():
 while True:
     main()
     play_again = input("Would you like to play again? Y/N ")
-    if play_again.upper() == "Y":
+    if play_again.upper() == "Y":#cleaned input using upper since "or" wasn't working
         print("Here we go again!")
     elif play_again.upper() == "N":
         print("Thanks for playing!")
         break
-    else:
+    else:#Not going to add checks for "yes" "no" or other such things
         print("I'm not building in any more checks for a silly person like you :)\nHave a great day!")
         break
